@@ -16,6 +16,8 @@ class DatabaseService {
         do {
             let path: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
             db = try Connection("\(path)/librarydb.sqlite3")
+            
+            try db.execute("PRAGMA foreign_keys = ON;")
         } catch {
             print("Database connection error: \(error)")
         }

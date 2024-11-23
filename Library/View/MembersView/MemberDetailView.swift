@@ -10,6 +10,7 @@ import SwiftUI
 struct MemberDetailView: View {
     
     @ObservedObject var viewModel: MemberViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -74,6 +75,7 @@ struct MemberDetailView: View {
                     Button("Cancel", role: .cancel) { }
                     Button("Yes") {
                         viewModel.updateMember()
+                        dismiss()
                     }
                 }
                 

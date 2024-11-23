@@ -10,6 +10,7 @@ import SwiftUI
 struct CategoryDetailView: View {
     
     @ObservedObject var viewModel: CategoryViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -30,6 +31,7 @@ struct CategoryDetailView: View {
                         Button("Cancel", role: .cancel) { }
                         Button("Yes") {
                             viewModel.updateCategory()
+                            dismiss()
                         }
                     }
                 

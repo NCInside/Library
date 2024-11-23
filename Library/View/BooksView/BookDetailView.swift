@@ -10,6 +10,7 @@ import SwiftUI
 struct BookDetailView: View {
     
     @ObservedObject var viewModel: BookViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -77,6 +78,7 @@ struct BookDetailView: View {
                     Button("Cancel", role: .cancel) { }
                     Button("Yes") {
                         viewModel.updateBook()
+                        dismiss()
                     }
                 }
                 

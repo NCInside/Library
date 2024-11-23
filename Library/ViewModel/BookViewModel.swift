@@ -13,6 +13,7 @@ class BookViewModel: ObservableObject {
     @Published var categories: [Category] = []
     
     // Filter related
+    @Published var initialSelectedCategories: [Category] = []
     @Published var selectedCategories: [Category] = []
     @Published var tempSelectedCategories: [Category] = []
     @Published var isFilterPresented: Bool = false
@@ -39,6 +40,7 @@ class BookViewModel: ObservableObject {
     
     func filterPressed() {
         categories = categoryRepo.readAll()
+        tempSelectedCategories = initialSelectedCategories
         isFilterPresented.toggle()
     }
     
@@ -49,7 +51,20 @@ class BookViewModel: ObservableObject {
     
     func doneFilterPressed() {
         selectedCategories = tempSelectedCategories
+        initialSelectedCategories = tempSelectedCategories
         tempSelectedCategories.removeAll()
+        
+        if selectedCategories.isEmpty {
+            books = bookRepo.readAll()
+        }
+        else {
+            let selectedCategoryIds = selectedCategories.map { $0.id }
+            books = bookRepo.readAll().filter { book in
+                let bookCategories = bookCategoryRepo.readAllFromBook(id: book.id).map { $0.categoryId }
+                return selectedCategoryIds.allSatisfy { bookCategories.contains($0) }
+            }
+        }
+        
         isFilterPresented.toggle()
     }
     
@@ -187,11 +202,9 @@ class BookViewModel: ObservableObject {
     // Detail related end
     
     func showBooks() {
-        books = bookRepo.readAll()
-        
-//        if !selectedCategories.isEmpty {
-//            books = []
-//        }
+        if selectedCategories.isEmpty {
+            books = bookRepo.readAll()
+        }
     }
     
     func deleteBook(at offsets: IndexSet) {
